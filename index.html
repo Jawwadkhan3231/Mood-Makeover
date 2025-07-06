@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comfort Box for Mussu 💝</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background: #ffeef4;
+      color: #333;
+      padding: 20px;
+      text-align: center;
+      overflow-x: hidden;
+    }
+    .box {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 450px;
+      margin: auto;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    h1 { color: #ff69b4; margin-bottom: 10px; }
+    p { margin: 10px 0; font-size: 16px; }
+    .btn {
+      background: #ff69b4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      margin: 10px 5px;
+      cursor: pointer;
+    }
+    .hug-img, .hotwater-img, .teddy-img, .photo, .voice-player {
+      max-width: 200px;
+      display: none;
+      margin: 20px auto;
+      animation: fadeIn 1s forwards;
+    }
+    .card, .scratch-card {
+      background: #fdd;
+      width: 100%;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 10px auto;
+      cursor: pointer;
+    }
+    .heart {
+      position: absolute;
+      animation: float 4s ease-in-out;
+      font-size: 30px;
+      color: red;
+      opacity: 0;
+    }
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-200px); opacity: 0; }
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: scale(0.9);}
+      to {opacity: 1; transform: scale(1);}
+    }
+    #loader {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #ffeef4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #ff69b4;
+      z-index: 1000;
+      animation: fadeOut 3s forwards;
+    }
+    @keyframes fadeOut {
+      0% {opacity: 1;}
+      90% {opacity: 0;}
+      100% {display: none; visibility: hidden;}
+    }
+  </style>
+</head>
+<body>
+  <div id="loader">Loading love from JOJO to Mussu... 💖</div>
+
+  <div class="box">
+    <h1>Hey Mussu 🌸</h1>
+    <p>From your JOJO 💖</p>
+
+    <button class="btn" onclick="sendHug()">Click for Hug 🤗</button>
+    <img src="hug.gif" class="hug-img" id="hugImg" alt="hug">
+
+    <button class="btn" onclick="playMusic()">Play Music 🎵</button>
+    <audio id="bgMusic" src="music.mp3"></audio>
+
+    <div class="card" onclick="flipLove()" id="loveCard">💌 Tap for Love Note</div>
+    <p id="loveNote" style="display:none; font-style: italic;">Tere bina din adhoore lagte hain, Mussu tu ho toh har dard bhi pyaara lagta hai 💖</p>
+
+    <p><strong>How are you feeling?</strong></p>
+    <div>
+      <button class="btn" onclick="mood('🥴')">🥴</button>
+      <button class="btn" onclick="mood('😕')">😕</button>
+      <button class="btn" onclick="mood('🙂')">🙂</button>
+      <button class="btn" onclick="mood('😊')">😊</button>
+      <button class="btn" onclick="mood('🥰')">🥰</button>
+    </div>
+    <p id="moodReply"></p>
+
+    <h3>🎲 Love Dice</h3>
+    <button class="btn" onclick="rollDice()">Roll the Dice</button>
+    <p id="diceResult"></p>
+
+    <h3>🎁 Scratch Card</h3>
+    <div class="scratch-card" onclick="revealScratch()">Scratch Here ✨</div>
+    <p id="scratchReveal"></p>
+
+    <h3>💬 Random Shairi</h3>
+<button class="btn" onclick="showRandomShairi()">Show Shairi</button>
+<p id="shairiDisplay" style="font-style: italic; margin-top: 10px;"></p>
+
+    
+
+    <!-- These elements still exist but are hidden -->
+    <img src="hug-charged.gif" class="hug-img" id="chargedHugImg" alt="hug charged" style="display:none;">
+    <img src="hotwater.gif" class="hotwater-img" id="hotImg" alt="hot water" style="display:none;">
+    <img src="teddy.gif" class="teddy-img" id="teddyImg" alt="teddy" style="display:none;">
+    <audio class="voice-player" id="jojoVoice" controls src="voice.mp3" style="display:none;"></audio>
+  </div>
+
+  <script>
+    const shairis = [
+      "Har dard mein bhi teri yaadon ka sukoon chhupa hai 💫",
+      "Main teri muskaan ke liye duniya se lad sakta hoon 💖",
+      "Tu muskuraati rahe, bas yahi dua hai har shaam 💌",
+      "Jo tu muskura de, to dard bhi rooth jaate hain",
+      "Mere liye tu dua bhi hai, dawa bhi 💞",
+      "Tujhse milke har dard ka matlab pyaar lagta hai",
+    ];
+
+    const diceOutcomes = [
+      "💌 A sweet note: Tum meri zindagi ka sabse pyaara hissa ho.",
+      "🧁 Cupcake surprise!",
+      "🐻 A teddy hug is coming your way!",
+      "💋 One forehead kiss voucher redeemed!",
+      "🛌 You get a cozy nap while I guard your dreams 😴",
+      "🎨 Let’s make a silly memory — draw me like one of your dreams 😆",
+      "🐣 One JOJO cuddle delivered by a squishy penguin 🐧",
+      "Abracadabra! JOJO’s magic erased your pain for today",
+        "💖 Today, you are the queen. I am your forever servant 😌",
+
+    ];
+
+    const scratchMessages = [
+      "🎁 You earned a head massage!",
+      "🍫 A chocolate treat from JOJO",
+      "💋 One forehead kiss coming right up!",
+      "🧸 Cuddle time unlocked!"
+    ];
+
+    function sendHug() {
+      document.getElementById('hugImg').style.display = 'block';
+      for (let i = 0; i < 20; i++) {
+        let heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.innerHTML = '❤️';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.top = '100vh';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 4000);
+      }
+    }
+
+    function playMusic() {
+      document.getElementById('bgMusic').play();
+    }
+
+    function flipLove() {
+      document.getElementById('loveCard').style.display = 'none';
+      document.getElementById('loveNote').style.display = 'block';
+    }
+
+    function mood(emoji) {
+      let reply = {
+        '🥴': 'Oh no! Sending extra cuddles Mussu 💕',
+        '😕': 'Hang in there, JOJO is always here 🤗',
+        '🙂': 'Glad you’re okay! Stay hydrated 💧',
+        '😊': 'Yay! Proud of my strong girl 💪',
+        '🥰': 'Awww you’re glowing even in pain 💖'
+      };
+      document.getElementById('moodReply').innerText = reply[emoji];
+    }
+
+    function rollDice() {
+      const random = Math.floor(Math.random() * diceOutcomes.length);
+      document.getElementById('diceResult').innerText = diceOutcomes[random];
+    }
+
+    function revealScratch() {
+      const msg = scratchMessages[Math.floor(Math.random() * scratchMessages.length)];
+      document.getElementById('scratchReveal').innerText = msg;
+    }
+function showRandomShairi() {
+  const random = Math.floor(Math.random() * shairis.length);
+  document.getElementById('shairiDisplay').innerText = shairis[random];
+}
+
+    
+  </script>
+</body>
+</html>
